@@ -96,6 +96,13 @@ def draw(axes,
     if edgecolor is None:
         edgecolor = 'none'
 
+    if hatchs is not None:
+        if len(hatchs) != num_entries:
+            raise ValueError('[barchart] Given hatchs do not match the data')
+    else:
+        hatchs=[ None for eid in range(num_entries) ]
+
+
     ############################################################################
     # Coordinates of bars
 
