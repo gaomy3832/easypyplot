@@ -110,9 +110,10 @@ def draw(axes,
     ybottoms = np.zeros(num_groups)
     # xlefts are the left x coordinates of each bar
     if breakdown:
-        xlefts = xticks - width/2
+        xlefts = xticks - width/2.0
     else:
-        xlefts = xticks - width*num_entries/2 + (1 - cluster_bar_shrink)*width/2
+        xlefts = xticks - width * num_entries / 2.0 \
+                + (1 - cluster_bar_shrink) * width / 2.0
 
     ############################################################################
     # Each time draw each entry for all groups
