@@ -10,5 +10,5 @@ import easypyplot.format
 import easypyplot.pdf
 import easypyplot.util
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
