@@ -15,7 +15,7 @@ INCHES_PER_PT = 1.0 / 72
 _GOLDEN_RATIO = (np.sqrt(5) - 1) / 2.
 
 
-def turn_off_box(axes):
+def turn_off_box(axes, twinx_axes=None):
     """ Turn off the top and right spines of the plot box of the axes.
 
     axes: axes of the box.
@@ -24,6 +24,11 @@ def turn_off_box(axes):
     axes.spines['right'].set_visible(False)
     axes.xaxis.set_ticks_position('bottom')
     axes.yaxis.set_ticks_position('left')
+    if twinx_axes is not None:
+        twinx_axes.spines['top'].set_visible(False)
+        twinx_axes.spines['left'].set_visible(False)
+        twinx_axes.xaxis.set_ticks_position('bottom')
+        twinx_axes.yaxis.set_ticks_position('right')
 
 
 def paper_plot(fontsize=9):
