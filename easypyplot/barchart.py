@@ -15,7 +15,7 @@ def draw(axes,
          xticks=None, width=None, cluster_bar_shrink=None,
          colors=None, edgecolor='k', linewidth=0.5,
          hatchs=None, hatchcolor='k',
-         legendloc='upper right', log=False,
+         legendloc='upper right', legendncol=1, log=False,
          xticklabelfontsize=None, xticklabelrotation='horizontal'):
 
     """ A super flexible bar chart drawing wrapper.
@@ -47,6 +47,8 @@ def draw(axes,
     hatchcolor: the color of all hatches.
 
     legendloc: the location of the legend.
+
+    legendncol: number of columns of the legend.
 
     log: whether the y-axis should be in log scale.
 
@@ -171,7 +173,7 @@ def draw(axes,
                 fontsize=xticklabelfontsize, rotation=xticklabelrotation)
 
     if entry_names is not None:
-        axes.legend(hdls, entry_names, legendloc)
+        axes.legend(hdls, entry_names, loc=legendloc, ncol=legendncol)
 
     axes.set_xlim([xticks[0]-1, xticks[-1]+1])
 
