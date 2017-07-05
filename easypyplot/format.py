@@ -40,20 +40,26 @@ def paper_plot(fontsize=9):
     http://damon-is-a-geek.com/publication-ready-the-first-time-beautiful-reproducible-plots-with-matplotlib.html
     """
     matplotlib.rcParams['font.family'] = 'serif'
+    matplotlib.rcParams['font.serif'] = ['Times New Roman']
     matplotlib.rcParams['font.size'] = fontsize
     matplotlib.rcParams['legend.fontsize'] = fontsize
+    matplotlib.rcParams['legend.fancybox'] = False
+    matplotlib.rcParams['legend.shadow'] = False
+    matplotlib.rcParams['legend.numpoints'] = 2
+    matplotlib.rcParams['legend.scatterpoints'] = 3
+    try:
+        matplotlib.rcParams['legend.framealpha'] = 1.0
+    except KeyError:
+        pass
     matplotlib.rcParams['axes.labelsize'] = fontsize
     matplotlib.rcParams['xtick.labelsize'] = fontsize
     matplotlib.rcParams['ytick.labelsize'] = fontsize
     matplotlib.rcParams['grid.linestyle'] = ':'
     matplotlib.rcParams['grid.linewidth'] = 0.5
+    matplotlib.rcParams['grid.alpha'] = 1.0
     matplotlib.rcParams['grid.color'] = 'k'
-    matplotlib.rcParams['legend.fancybox'] = False
-    matplotlib.rcParams['legend.framealpha'] = 1.0
     matplotlib.rcParams['lines.linewidth'] = 0.75
     matplotlib.rcParams['lines.markersize'] = 4
-    matplotlib.rcParams['font.serif'] = ['Times New Roman']
-    matplotlib.rcParams['text.usetex'] = True
 
 
 def get_fig_dims(width_in_pt):
