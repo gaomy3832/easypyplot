@@ -19,6 +19,7 @@ def turn_off_box(axes, twinx_axes=None):
     """ Turn off the top and right spines of the plot box of the axes.
 
     axes: axes of the box.
+    twinx_axes: twinx axes.
     """
     axes.spines['top'].set_visible(False)
     axes.spines['right'].set_visible(False)
@@ -35,9 +36,6 @@ def paper_plot(fontsize=9):
     """ Initialize the settings of the plot, including font, fontsize, etc..
 
     fontsize: fontsize for legends and labels.
-
-    Ref:
-    http://damon-is-a-geek.com/publication-ready-the-first-time-beautiful-reproducible-plots-with-matplotlib.html
     """
     matplotlib.rcParams['font.family'] = 'serif'
     matplotlib.rcParams['font.serif'] = ['Times New Roman']
@@ -103,8 +101,7 @@ def set_axis_to_percent(axis):
         # The percent symbol needs escaping in latex
         if matplotlib.rcParams['text.usetex']:
             return s + r'$\%$'
-        else:
-            return s + '%'
+        return s + '%'
 
     axis.set_major_formatter(matplotlib.ticker.FuncFormatter(cb_to_percent))
 
