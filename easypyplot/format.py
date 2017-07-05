@@ -52,7 +52,7 @@ def paper_plot(fontsize=9):
     matplotlib.rcParams['legend.framealpha'] = 1.0
     matplotlib.rcParams['lines.linewidth'] = 0.75
     matplotlib.rcParams['lines.markersize'] = 4
-    matplotlib.rcParams['font.serif'] = ['Times']
+    matplotlib.rcParams['font.serif'] = ['Times New Roman']
     matplotlib.rcParams['text.usetex'] = True
 
 
