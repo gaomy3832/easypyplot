@@ -11,7 +11,7 @@ def plot_setup(name, dims, fontsize=9):
     """ Setup a PDF page for plot.
 
     name: PDF file name. If not ending with .pdf, will automatically append.
-    dims: dimension of the plot, should be an array of length two.
+    dims: dimension of the plot in inches, should be an array of length two.
     fontsize: fontsize for legends and labels.
     """
     paper_plot(fontsize)
