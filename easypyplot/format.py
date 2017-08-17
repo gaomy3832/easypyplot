@@ -50,6 +50,7 @@ def paper_plot(fontsize=9):
     except KeyError:
         pass
     matplotlib.rcParams['axes.labelsize'] = fontsize
+    matplotlib.rcParams['axes.axisbelow'] = True
     matplotlib.rcParams['xtick.labelsize'] = fontsize
     matplotlib.rcParams['ytick.labelsize'] = fontsize
     matplotlib.rcParams['grid.linestyle'] = ':'
