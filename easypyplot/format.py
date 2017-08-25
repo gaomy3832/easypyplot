@@ -3,17 +3,15 @@
  * All rights reserved.
  *
 """
+import shutil
 import numpy as np
 import matplotlib.ticker
-
 
 # Inches per point.
 INCHES_PER_PT = 1.0 / 72
 
-
 # Golden ratio, 0.618...
 _GOLDEN_RATIO = (np.sqrt(5) - 1) / 2.
-
 
 def turn_off_box(axes, twinx_axes=None):
     """ Turn off the top and right spines of the plot box of the axes.
@@ -37,6 +35,9 @@ def paper_plot(fontsize=9):
 
     fontsize: fontsize for legends and labels.
     """
+    # Clear font cache (in case of switching host machines).
+    shutil.rmtree(matplotlib.get_cachedir(), ignore_errors=True)
+
     matplotlib.rcParams['font.family'] = 'serif'
     matplotlib.rcParams['font.serif'] = ['Times New Roman']
     matplotlib.rcParams['font.size'] = fontsize
@@ -105,5 +106,4 @@ def set_axis_to_percent(axis):
         return s + '%'
 
     axis.set_major_formatter(matplotlib.ticker.FuncFormatter(cb_to_percent))
-
 
