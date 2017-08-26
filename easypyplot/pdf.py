@@ -23,12 +23,13 @@ def plot_setup(name, figsize=None, fontsize=9):
     return pdfpage, fig
 
 
-def plot_teardown(pdfpage):
+def plot_teardown(pdfpage, fig=None):
     """ Tear down a PDF page after plotting.
 
     pdfpage: PDF page.
+    fig: the figure to save.
     """
-    pdfpage.savefig()
+    pdfpage.savefig(fig)
     pdfpage.close()
 
 
@@ -42,5 +43,5 @@ def plot_open(name, figsize=None, fontsize=9):
     """
     pdfpage, fig = plot_setup(name, figsize=figsize, fontsize=fontsize)
     yield fig
-    plot_teardown(pdfpage)
+    plot_teardown(pdfpage, fig)
 
