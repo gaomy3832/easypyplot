@@ -9,6 +9,7 @@ import matplotlib.ticker
 from cycler import cycler
 
 from .color import COLOR_SET
+from .util import __mpl_version__
 
 # Inches per point.
 INCHES_PER_PT = 1.0 / 72
@@ -52,29 +53,24 @@ def paper_plot(fontsize=9):
     matplotlib.rcParams['legend.scatterpoints'] = 3
     matplotlib.rcParams['legend.borderpad'] = 0.4
     try:
-        # Not exist before 2.0
         matplotlib.rcParams['legend.facecolor'] = 'inherit'
         matplotlib.rcParams['legend.edgecolor'] = 'inherit'
     except KeyError:
-        pass
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
     try:
-        # Not exist before 1.5
         matplotlib.rcParams['legend.framealpha'] = 1.0
     except KeyError:
-        pass
+        assert __mpl_version__ < (1, 5)  # Changed from 1.5
     matplotlib.rcParams['axes.linewidth'] = 1.0
     matplotlib.rcParams['axes.facecolor'] = 'w'
     matplotlib.rcParams['axes.edgecolor'] = 'k'
     matplotlib.rcParams['axes.labelsize'] = fontsize
     matplotlib.rcParams['axes.axisbelow'] = True
     try:
-        # Changed starting from 1.5
         matplotlib.rcParams['axes.prop_cycle'] = cycler('color', COLOR_SET)
     except KeyError:
-        try:
-            matplotlib.rcParams['axes.color_cycle'] = COLOR_SET
-        except KeyError:
-            pass
+        assert __mpl_version__ < (1, 5)  # Changed from 1.5
+        matplotlib.rcParams['axes.color_cycle'] = COLOR_SET
     matplotlib.rcParams['xtick.labelsize'] = fontsize
     matplotlib.rcParams['ytick.labelsize'] = fontsize
     matplotlib.rcParams['grid.linestyle'] = ':'
@@ -82,25 +78,29 @@ def paper_plot(fontsize=9):
     matplotlib.rcParams['grid.alpha'] = 1.0
     matplotlib.rcParams['grid.color'] = 'k'
     matplotlib.rcParams['lines.linewidth'] = 0.75
-    matplotlib.rcParams['lines.color'] = 'C0'
+    try:
+        matplotlib.rcParams['lines.color'] = 'C0'
+    except ValueError:
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
     matplotlib.rcParams['lines.markeredgewidth'] = 0.5
     matplotlib.rcParams['lines.markersize'] = 4
     try:
-        # Not exist before 2.0.
         matplotlib.rcParams['lines.dashed_pattern'] = [4, 4]
         matplotlib.rcParams['lines.dashdot_pattern'] = [4, 2, 1, 2]
         matplotlib.rcParams['lines.dotted_pattern'] = [1, 3]
     except KeyError:
-        pass
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
     matplotlib.rcParams['patch.linewidth'] = 0.5
-    matplotlib.rcParams['patch.facecolor'] = 'C0'
+    try:
+        matplotlib.rcParams['patch.facecolor'] = 'C0'
+    except ValueError:
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
     matplotlib.rcParams['patch.edgecolor'] = 'k'
     try:
-        # Not exist before 2.0.
         matplotlib.rcParams['hatch.linewidth'] = 0.5
         matplotlib.rcParams['hatch.color'] = 'k'
     except KeyError:
-        pass
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
 
 
 def get_fig_dims(width_in_pt):

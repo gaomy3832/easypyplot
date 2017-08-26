@@ -6,6 +6,8 @@
 import numpy as np
 import matplotlib.colors
 
+from .util import __mpl_version__
+
 # Colors from http://www.colorbrewer2.org/, 8-class, qualitative, Accent
 COLOR_SET = ['#386cb0', '#7fc97f', '#f0027f', '#beaed4', \
              '#bf5b17', '#fdc086', '#666666', '#ffff99']
@@ -19,7 +21,11 @@ def color_scale(ref, num, low=0.2, high=0.9):
     high: high brightness.
     """
     # Saturate the color.
-    rgb = matplotlib.colors.to_rgb(ref)
+    try:
+        rgb = matplotlib.colors.to_rgb(ref)
+    except AttributeError:
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
+        rgb = matplotlib.colors.ColorConverter().to_rgb(ref)
     if max(rgb) < 1e-4:
         # All 0, black.
         rgb = (1.,) * len(rgb)
