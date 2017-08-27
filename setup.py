@@ -41,8 +41,11 @@ setuptools.setup(
         'coverage>=4',
         'matplotlib>=1.3',
         'numpy>=1.8',
-        'nose>=1.3',
         'cycler>=0.10',
+        'nose>=1.3',
+        'pytest>=3',
+        'pytest-cov>=2',
+        'pytest-xdist>=1',
     ],
 
     keywords='matplotlib python-plot',
