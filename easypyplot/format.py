@@ -4,6 +4,7 @@
  *
 """
 import shutil
+import locale
 import numpy as np
 import matplotlib.ticker
 from cycler import cycler
@@ -39,6 +40,9 @@ def paper_plot(fontsize=9):
 
     fontsize: fontsize for legends and labels.
     """
+    # Set locale for unicode signs (e.g., minus sign).
+    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+
     # Clear font cache (in case of switching host machines).
     shutil.rmtree(matplotlib.get_cachedir(), ignore_errors=True)
 
