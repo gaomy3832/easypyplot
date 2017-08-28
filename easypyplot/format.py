@@ -37,6 +37,8 @@ def turn_off_box(axes, twinx_axes=None):
 
 def paper_plot(fontsize=9):
     """ Initialize the settings of the plot, including font, fontsize, etc..
+    Also refer to the changes in
+    https://matplotlib.org/users/dflt_style_changes.html
 
     fontsize: fontsize for legends and labels.
     """
@@ -81,7 +83,7 @@ def paper_plot(fontsize=9):
     matplotlib.rcParams['grid.linewidth'] = 0.5
     matplotlib.rcParams['grid.alpha'] = 1.0
     matplotlib.rcParams['grid.color'] = 'k'
-    matplotlib.rcParams['lines.linewidth'] = 0.75
+    matplotlib.rcParams['lines.linewidth'] = 1.0
     try:
         matplotlib.rcParams['lines.color'] = 'C0'
     except ValueError:
@@ -97,12 +99,30 @@ def paper_plot(fontsize=9):
     matplotlib.rcParams['patch.linewidth'] = 0.5
     try:
         matplotlib.rcParams['patch.facecolor'] = 'C0'
+        matplotlib.rcParams['patch.force_edgecolor'] = True
     except ValueError:
         assert __mpl_version__ < (2, 0)  # Changed from 2.0
     matplotlib.rcParams['patch.edgecolor'] = 'k'
     try:
         matplotlib.rcParams['hatch.linewidth'] = 0.5
         matplotlib.rcParams['hatch.color'] = 'k'
+    except KeyError:
+        assert __mpl_version__ < (2, 0)  # Changed from 2.0
+    matplotlib.rcParams['mathtext.fontset'] = 'cm'
+    matplotlib.rcParams['mathtext.rm'] = 'serif'
+    try:
+        matplotlib.rcParams['errorbar.capsize'] = 3
+    except KeyError:
+        assert __mpl_version__ < (1, 5)  # Changed from 1.5
+    matplotlib.rcParams['xtick.direction'] = 'out'
+    matplotlib.rcParams['ytick.direction'] = 'out'
+    matplotlib.rcParams['xtick.major.width'] = 0.8
+    matplotlib.rcParams['xtick.minor.width'] = 0.6
+    matplotlib.rcParams['ytick.major.width'] = 0.8
+    matplotlib.rcParams['ytick.minor.width'] = 0.6
+    try:
+        matplotlib.rcParams['xtick.top'] = False
+        matplotlib.rcParams['ytick.right'] = False
     except KeyError:
         assert __mpl_version__ < (2, 0)  # Changed from 2.0
 
