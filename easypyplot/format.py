@@ -136,19 +136,22 @@ def resize_ax_box(axes, wratio=1, hratio=1, to_right=False, to_bottom=False):
     axes.set_position([x0, y0, width, height])
 
 
-def set_axis_to_percent(axis):
+def set_axis_to_percent(axis, precision=0):
     """ Make axis to display percentage ticker.
 
     axis: a single axis, such as ax.yaxis.
+    precision: a number indicating how many digits should be displayed after
+    the decimal point, as in string format for f/F or g/G.
     """
     def cb_to_percent(value, position):
         """ Callback, arguments are value and tick position
         """
-        s = str(int(100 * value))
-        # The percent symbol needs escaping in latex
-        if matplotlib.rcParams['text.usetex']:
-            return s + r'$\%$'
-        return s + '%'
+        s = ('{' + ':.{}f'.format(precision) + '}').format(value * 100)
+        s = s.format(value * 100)
+        # Use Tex for better minus sign. Tex is directly supported in
+        # matplotlib even without Tex installed. See
+        # https://matplotlib.org/users/mathtext.html
+        return r'${}\%$'.format(s)
 
     axis.set_major_formatter(matplotlib.ticker.FuncFormatter(cb_to_percent))
 
