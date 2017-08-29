@@ -6,7 +6,6 @@
 import numpy as np
 import matplotlib
 from .color import COLOR_SET
-from .util import matplotlib_version_tuple
 
 
 def draw(axes,
@@ -120,12 +119,6 @@ def draw(axes,
         xlefts = xticks - width * num_entries / 2.0 \
                 + (1 - cluster_bar_shrink) * width / 2.0
 
-    # In matplotlib 2.0.0, xleft argument in bar() function call actually mean
-    # the center of the bars! How crazy!
-    bar_xleft_arg = np.copy(xlefts)  # deep copy
-    if matplotlib_version_tuple() >= (2, 0, 0):
-        bar_xleft_arg += cluster_bar_shrink * width / 2.0
-
     ############################################################################
     # Each time draw each entry for all groups
     hdls = []
@@ -134,7 +127,8 @@ def draw(axes,
 
         c = colors[eid]
 
-        p = axes.bar(bar_xleft_arg, d, width*cluster_bar_shrink, bottom=ybottoms,
+        p = axes.bar(xlefts, d, width * cluster_bar_shrink,
+                     bottom=ybottoms, align='edge',
                      color=c, log=log,
                      edgecolor=edgecolor, linewidth=linewidth)
 
@@ -152,7 +146,6 @@ def draw(axes,
             ybottoms += d
         else:
             xlefts += width
-            bar_xleft_arg += width
 
         hdls.append(p)
 
