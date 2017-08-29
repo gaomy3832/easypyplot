@@ -263,6 +263,8 @@ def image_comparison(baseline_images, extensions=None, tol=0,
                                  'figures generated')
 
             for idx, baseline in enumerate(baseline_images):
+                fignum = plt.get_fignums()[idx]
+                figure = plt.figure(fignum)
 
                 actual_fname = os.path.join(result_dir,
                                             baseline + '.' + extension)
@@ -275,14 +277,36 @@ def image_comparison(baseline_images, extensions=None, tol=0,
                     shutil.move(saved_fname, actual_fname)
 
                 else:
-                    fignum = plt.get_fignums()[idx]
-                    figure = plt.figure(fignum)
                     if remove_text:
                         remove_ticks_and_titles(figure)
                     figure.savefig(actual_fname, **kwargs)
 
+            # Decide the extra tolerance.
+            extra_tol = 0.5
+
+            def aggr_ticklabel(ticklabels):
+                ''' Aggregate all ticklabels as a string. '''
+                return ''.join(str(tl) for tl in ticklabels)
+
+            for ax in figure.get_axes():
+                xticklabels = aggr_ticklabel(ax.get_xticklabels()
+                                             + ax.get_xticklabels(minor=True))
+                yticklabels = aggr_ticklabel(ax.get_yticklabels()
+                                             + ax.get_yticklabels(minor=True))
+
+                if easypyplot.util.matplotlib_version_tuple() < (2, 0) \
+                        and yticklabels:
+                    # yaxis tick vertical alignment, fixed in 2.0.
+                    # See https://github.com/matplotlib/matplotlib/pull/6200
+                    extra_tol += 256 * min(0.15, 0.01 * len(yticklabels))
+
+                elif extension == 'png':
+                    # PNG backend is not accurate. Weird warning from libpng.
+                    extra_tol += 256 * min(0.1, 0.005 * len(xticklabels
+                                                            + yticklabels))
+
             # Compare images.
-            self.compare(baseline_images, extension, tol)
+            self.compare(baseline_images, extension, tol + extra_tol)
 
         # Dynamically add test methods for each image extension.
         for extension in extensions:
