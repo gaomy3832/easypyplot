@@ -5,8 +5,8 @@
 """
 import numpy as np
 import matplotlib
-from .color import COLOR_SET
 
+from .color import COLOR_SET
 
 def draw(axes,
          data, group_names=None, entry_names=None,
@@ -16,7 +16,6 @@ def draw(axes,
          hatchs=None, hatchcolor='k',
          legendloc='upper right', legendncol=1, log=False,
          xticklabelfontsize=None, xticklabelrotation='horizontal'):
-
     """ A super flexible bar chart drawing wrapper.
 
     axes: the axes instance to be drawn on.
@@ -46,7 +45,6 @@ def draw(axes,
     hatchcolor: the color of all hatches.
 
     legendloc: the location of the legend.
-
     legendncol: number of columns of the legend.
 
     log: whether the y-axis should be in log scale.
@@ -56,17 +54,28 @@ def draw(axes,
 
     return: handlers associated with entries.
     """
-
     # pylint: disable=too-many-branches
 
     ############################################################################
     # data contains num_groups groups, each group has num_entries entries
-    data = np.array(data)
+    try:
+        data = np.array(data, dtype=np.float64)
+    except ValueError:
+        raise ValueError('[barchart] data cannot be convert to an array. '
+                         'Dimension mismatch?\n{}'.format(data))
     dim = data.shape
     if len(dim) != 2:
         raise ValueError('[barchart] data must be 2-dimension')
     num_groups = dim[0]
     num_entries = dim[1]
+
+    if group_names is not None and len(group_names) != num_groups:
+        raise ValueError('[barchart] group names must have {} elements'
+                         .format(num_groups))
+
+    if entry_names is not None and len(entry_names) != num_entries:
+        raise ValueError('[barchart] entry names must have {} elements'
+                         .format(num_entries))
 
     ############################################################################
     # Parse and adjust plot parameters
@@ -171,5 +180,4 @@ def draw(axes,
     axes.set_xlim([xticks[0]-1, xticks[-1]+1])
 
     return hdls
-
 
