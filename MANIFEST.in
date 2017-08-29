@@ -1,0 +1,4 @@
+include *.txt *.md *.rst
+include *.ini
+include LICENSE
+recursive-include */tests/baseline_images *
