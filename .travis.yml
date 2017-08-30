@@ -1,0 +1,38 @@
+language: python
+
+python:
+    - 2.7
+
+addons:
+    apt:
+        packages:
+            - fontconfig
+            - inkscape
+            - dvipng
+            - texlive
+            - texlive-latex-extra
+            - xvfb
+
+before_install:
+    - sudo apt-get update -qq
+    - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+    - sudo apt-get install -qq msttcorefonts ttf-mscorefonts-installer
+    - sudo fc-cache -vf
+
+install:
+    - pip install tox
+    - pip install coveralls
+
+before_script:
+    - |
+      if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
+        export DISPLAY=:99.0
+        sh -e /etc/init.d/xvfb start
+      fi
+
+script:
+    - tox
+
+after_success:
+    - coveralls
+
