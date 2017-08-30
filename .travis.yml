@@ -13,6 +13,9 @@ addons:
             - texlive-latex-extra
             - xvfb
 
+cache:
+    pip: true
+
 before_install:
     - sudo apt-get update -qq
     - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
