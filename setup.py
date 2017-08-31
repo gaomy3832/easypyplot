@@ -48,6 +48,8 @@ setuptools.setup(
         'pytest-xdist>=1',
     ],
 
+    include_package_data=True,
+
     keywords='matplotlib python-plot',
     classifiers=[
         'Development Status :: 3 - Alpha',
