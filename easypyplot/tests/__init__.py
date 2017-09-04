@@ -94,8 +94,12 @@ def sin_plot(axes, phi=0, fmt='', remove_text=True):
         remove_ticks_and_titles(axes.get_figure())
     else:
         families = matplotlib.rcParams['font.family']
-        if isinstance(families, basestring):
-            families = [families]
+        try:
+            if isinstance(families, basestring):
+                families = [families]
+        except NameError:
+            if isinstance(families, str):
+                families = [families]
         fonts = sum([matplotlib.rcParams['font.{}'.format(f)]
                      for f in families], [])
         skip_if_without_fonts(fonts)
