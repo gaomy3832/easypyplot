@@ -19,14 +19,16 @@ import matplotlib.backends.backend_pdf
 
 from .format import paper_plot
 
-def plot_setup(name, figsize=None, fontsize=9):
+def plot_setup(name, figsize=None, fontsize=9, font='paper'):
     """ Setup a PDF page for plot.
 
     name: PDF file name. If not ending with .pdf, will automatically append.
     figsize: dimension of the plot in inches, should be an array of length two.
     fontsize: fontsize for legends and labels.
+    font: font for legends and labels, 'paper' uses Times New Roman, 'default'
+    uses default, a tuple of (family, font, ...) customizes font.
     """
-    paper_plot(fontsize)
+    paper_plot(fontsize=fontsize, font=font)
     if not name.endswith('.pdf'):
         name += '.pdf'
     pdfpage = matplotlib.backends.backend_pdf.PdfPages(name)
@@ -45,14 +47,17 @@ def plot_teardown(pdfpage, fig=None):
 
 
 @contextmanager
-def plot_open(name, figsize=None, fontsize=9):
+def plot_open(name, figsize=None, fontsize=9, font='paper'):
     """ Open a context of PDF page for plot, used for the `with` statement.
 
     name: PDF file name. If not ending with .pdf, will automatically append.
     figsize: dimension of the plot in inches, should be an array of length two.
     fontsize: fontsize for legends and labels.
+    font: font for legends and labels, 'paper' uses Times New Roman, 'default'
+    uses default, a tuple of (family, font, ...) customizes font.
     """
-    pdfpage, fig = plot_setup(name, figsize=figsize, fontsize=fontsize)
+    pdfpage, fig = plot_setup(name, figsize=figsize, fontsize=fontsize,
+                              font=font)
     yield fig
     plot_teardown(pdfpage, fig)
 

@@ -46,12 +46,14 @@ def turn_off_box(axes, twinx_axes=None):
         twinx_axes.yaxis.set_ticks_position('right')
 
 
-def paper_plot(fontsize=9):
+def paper_plot(fontsize=9, font='paper'):
     """ Initialize the settings of the plot, including font, fontsize, etc..
     Also refer to the changes in
     https://matplotlib.org/users/dflt_style_changes.html
 
     fontsize: fontsize for legends and labels.
+    font: font for legends and labels, 'paper' uses Times New Roman, 'default'
+    uses default, a tuple of (family, font, ...) customizes font.
     """
     # Set locale for unicode signs (e.g., minus sign).
     locale.setlocale(locale.LC_ALL, 'C.UTF-8')
@@ -59,8 +61,17 @@ def paper_plot(fontsize=9):
     # Clear font cache (in case of switching host machines).
     shutil.rmtree(matplotlib.get_cachedir(), ignore_errors=True)
 
-    matplotlib.rcParams['font.family'] = 'serif'
-    matplotlib.rcParams['font.serif'] = ['Times New Roman']
+    if font == 'paper':
+        matplotlib.rcParams['font.family'] = 'serif'
+        matplotlib.rcParams['font.serif'] = ['Times New Roman']
+    elif font == 'default':
+        pass
+    else:
+        if not isinstance(font, (tuple, list)) or len(font) < 2:
+            raise ValueError('[format] font must be a tuple of (family, font)')
+        matplotlib.rcParams['font.family'] = font[0]
+        matplotlib.rcParams['font.{}'.format(font[0])] = list(font[1:])
+
     matplotlib.rcParams['font.size'] = fontsize
     matplotlib.rcParams['legend.loc'] = 'upper right'
     matplotlib.rcParams['legend.fontsize'] = fontsize
