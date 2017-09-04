@@ -103,6 +103,7 @@ def sin_plot(axes, phi=0, fmt='', remove_text=True):
 
 def setup():
     ''' Set up. '''
+    plt.close('all')
     original_units_registry = matplotlib.units.registry.copy()
     original_settings = matplotlib.rcParams.copy()
     ver = easypyplot.util.matplotlib_version_tuple()
