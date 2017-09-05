@@ -53,13 +53,15 @@ def remove_ticks_and_titles(figure):
 def skip_if_without_fonts(fonts):
     ''' Skip the test if the system does not have the given fonts. '''
     __tracebackhide__ = True  # pylint: disable=unused-variable
-    with warnings.catch_warnings():
-        warnings.filterwarnings('error')
-        for font in fonts:
-            try:
-                matplotlib.font_manager.FontManager().findfont(font)
-            except UserWarning:
-                continue
+    for font in fonts:
+        # Use unicode string as font name.
+        try:
+            name = unicode(font)
+        except NameError:
+            name = font
+        fp = matplotlib.font_manager.FontProperties(
+            fname=matplotlib.font_manager.findfont(name))
+        if fp.get_name() == name:
             # Find a font.
             return
     # No font found.
