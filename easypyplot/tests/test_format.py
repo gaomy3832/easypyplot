@@ -20,7 +20,6 @@ import matplotlib
 from matplotlib import pyplot as plt
 
 from easypyplot import format as fmt  # avoid conflict with built-in.
-from easypyplot import pdf
 
 from . import sin_plot, skip_if_without_tex
 from . import image_comparison
@@ -48,37 +47,50 @@ def test_turn_off_box_twinx():
     sin_plot(ax2)
 
 
-@image_comparison(baseline_images=['format_paper_plot'], extensions=['pdf'],
-                  saved_as=['format_paper_plot'])
+@image_comparison(baseline_images=['format_paper_plot'])
 def test_paper_plot():
     ''' format paper plot. '''
-    with pdf.plot_open('format_paper_plot', figsize=(4, 3)) as fig:
+    # Must be before figure creation.
+    fmt.paper_plot(font='default')
 
-        fmt.paper_plot()
+    fig = plt.figure()
+    ax = fig.gca()
 
-        # Draw.
-        ax = fig.gca()
+    sin_plot(ax, remove_text=False)
+    sin_plot(ax, phi=0.5 * np.pi, fmt='--', remove_text=False)
+    sin_plot(ax, phi=1 * np.pi, fmt='-.', remove_text=False)
+    sin_plot(ax, phi=1.5 * np.pi, fmt=':', remove_text=False)
 
-        sin_plot(ax, remove_text=False)
-        sin_plot(ax, phi=0.5 * np.pi, fmt='--', remove_text=False)
-        sin_plot(ax, phi=1 * np.pi, fmt='-.', remove_text=False)
-        sin_plot(ax, phi=1.5 * np.pi, fmt=':', remove_text=False)
+    x = np.linspace(0, 6, 13)
+    y = x / -6
+    ax.plot(x, y, 's')
 
-        x = np.linspace(0, 6, 13)
-        y = x / -6
-        ax.plot(x, y, 's')
+    ax.scatter([1, 2, 3], [0, -0.5, 0.5])
 
-        ax.scatter([1, 2, 3], [0, -0.5, 0.5])
+    ax.set_xlabel('My x label')
+    ax.set_ylabel('My y label')
+    ax.set_xticks(np.linspace(0, 6, 7, endpoint=True))
+    ax.set_yticks(np.linspace(-1, 1, 9, endpoint=True))
+    ax.set_xlim([0, 6])
+    ax.set_ylim([-1, 1])
+    ax.yaxis.grid(True)
+    ax.legend(['My data 1-1', 'My data 1-2', 'My data 1-3', 'My data 1-4',
+               'My data 2', 'My points'])
 
-        ax.set_xlabel('My x label')
-        ax.set_ylabel('My y label')
-        ax.set_xticks(np.linspace(0, 6, 7, endpoint=True))
-        ax.set_yticks(np.linspace(-1, 1, 9, endpoint=True))
-        ax.set_xlim([0, 6])
-        ax.set_ylim([-1, 1])
-        ax.yaxis.grid(True)
-        ax.legend(['My data 1-1', 'My data 1-2', 'My data 1-3', 'My data 1-4',
-                   'My data 2', 'My points'])
+
+@image_comparison(baseline_images=['format_paper_plot_mono'])
+def test_paper_plot_mono():
+    ''' format paper plot with monospace font. '''
+    # Must be before figure creation.
+    fmt.paper_plot(font=('monospace', 'DejaVu Sans Mono'))
+
+    fig = plt.figure()
+    ax = fig.gca()
+
+    sin_plot(ax, remove_text=False)
+
+    ax.set_xlabel('My x label')
+    ax.set_ylabel('My y label')
 
 
 @image_comparison(baseline_images=['format_resize_ax_box_w_r'])
@@ -192,4 +204,9 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(len(figsize), 2)
         self.assertAlmostEqual(figsize[0], 3.4722, places=4)
         self.assertAlmostEqual(figsize[1] / figsize[0], 0.618, places=3)
+
+    def test_paper_plot_invalid_font(self):
+        ''' paper_plot invalid font. '''
+        with self.assertRaisesRegexp(ValueError, r'\[format\] .*font.*'):
+            fmt.paper_plot(font='DejaVu Serif')
 
