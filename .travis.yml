@@ -36,7 +36,7 @@ before_script:
         sh -e /etc/init.d/xvfb start
       fi
     # See https://github.com/tox-dev/tox/issues/318
-    - export TOXENV=`tox --listenvs | grep "py${TRAVIS_PYTHON_VERSION/./}-" | tr '\n' ','`
+    - export TOXENV=`tox --listenvs | grep $(echo py${TRAVIS_PYTHON_VERSION}- | tr -d . | sed -e 's/pypypy/pypy/') | tr '\n' ','`
 
 script:
     - tox
