@@ -14,7 +14,11 @@ You should have received a copy of the Modified BSD-3 License along with this
 program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 """
 
+import sys
+import pytest
+
 from easypyplot import pdf
+from easypyplot import util
 
 from . import sin_plot
 from . import image_comparison
@@ -65,6 +69,11 @@ def test_fontsize():
         pdf.plot_teardown(pdfpage)
 
 
+@pytest.mark.xfail(util.__mpl_version__[:2] == (2, 0)
+                   and sys.version_info >= (3,),
+                   reason='Python 3 with 2.0 fails with Times unicode minus. '
+                          'https://github.com/matplotlib/matplotlib/issues/9139'
+                  )
 @image_comparison(baseline_images=['pdf_fontsize_times'], extensions=['pdf'],
                   saved_as=['pdf_fontsize_times'])
 def test_fontsize_times():
