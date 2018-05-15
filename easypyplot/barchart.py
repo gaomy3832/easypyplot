@@ -1,5 +1,5 @@
 """ $lic$
-Copyright (c) 2016-2017, Mingyu Gao
+Copyright (c) 2016-2018, Mingyu Gao
 All rights reserved.
 
 This program is free software: you can redistribute it and/or modify it under
