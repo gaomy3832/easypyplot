@@ -69,9 +69,10 @@ def test_fontsize():
         pdf.plot_teardown(pdfpage)
 
 
-@pytest.mark.xfail(util.__mpl_version__[:2] == (2, 0)
+@pytest.mark.xfail(util.__mpl_version__[:2] >= (2, 0)
+                   and util.__mpl_version__[:2] < (2, 3)
                    and sys.version_info >= (3,),
-                   reason='Python 3 with 2.0 fails with Times unicode minus. '
+                   reason='Python 3 with 2.x fails with Times unicode minus. '
                           'https://github.com/matplotlib/matplotlib/issues/9139'
                   )
 @image_comparison(baseline_images=['pdf_fontsize_times'], extensions=['pdf'],
