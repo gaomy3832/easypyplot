@@ -64,6 +64,8 @@ def paper_plot(fontsize=9, font='paper'):
     if font == 'paper':
         matplotlib.rcParams['font.family'] = 'serif'
         matplotlib.rcParams['font.serif'] = ['Times New Roman']
+        matplotlib.rcParams['mathtext.fontset'] = 'stix'  # to blend well with Times
+        matplotlib.rcParams['mathtext.rm'] = 'serif'
     elif font == 'default':
         pass
     else:
@@ -71,6 +73,7 @@ def paper_plot(fontsize=9, font='paper'):
             raise ValueError('[format] font must be a tuple of (family, font)')
         matplotlib.rcParams['font.family'] = font[0]
         matplotlib.rcParams['font.{}'.format(font[0])] = list(font[1:])
+        matplotlib.rcParams['mathtext.rm'] = font[0]
 
     matplotlib.rcParams['font.size'] = fontsize
     matplotlib.rcParams['legend.loc'] = 'upper right'
@@ -130,8 +133,6 @@ def paper_plot(fontsize=9, font='paper'):
         matplotlib.rcParams['hatch.color'] = 'k'
     except KeyError:
         assert __mpl_version__ < (2, 0)  # Changed from 2.0
-    matplotlib.rcParams['mathtext.fontset'] = 'cm'
-    matplotlib.rcParams['mathtext.rm'] = 'serif'
     try:
         matplotlib.rcParams['errorbar.capsize'] = 3
     except KeyError:

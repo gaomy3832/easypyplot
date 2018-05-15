@@ -190,6 +190,21 @@ def test_set_axis_to_percent_tex():
     fmt.set_axis_to_percent(ax.yaxis)
 
 
+@image_comparison(baseline_images=['format_set_axis_to_percent_pplot'],
+                  remove_text=False)
+def test_set_axis_to_percent_pplot():
+    ''' format set axis tick to percentage with paper plot. '''
+    fmt.paper_plot()
+
+    fig = plt.figure()
+    ax = fig.gca()
+
+    sin_plot(ax)
+    ax.set_yticks(np.linspace(-100, 100, 11, endpoint=True) / 100.)
+
+    fmt.set_axis_to_percent(ax.yaxis)
+
+
 class TestFormat(unittest.TestCase):
     ''' Tests for format module. '''
 
