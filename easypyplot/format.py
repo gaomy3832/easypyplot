@@ -76,6 +76,11 @@ def paper_plot(fontsize=9, font='paper'):
         matplotlib.rcParams['mathtext.rm'] = font[0]
 
     matplotlib.rcParams['font.size'] = fontsize
+
+    # Use TrueType fonts.
+    matplotlib.rcParams['ps.fonttype'] = 42
+    matplotlib.rcParams['pdf.fonttype'] = 42
+
     matplotlib.rcParams['legend.loc'] = 'upper right'
     matplotlib.rcParams['legend.fontsize'] = fontsize
     matplotlib.rcParams['legend.fancybox'] = False
