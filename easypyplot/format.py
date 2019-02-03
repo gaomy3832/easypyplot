@@ -14,6 +14,7 @@ You should have received a copy of the Modified BSD-3 License along with this
 program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 """
 
+import os
 import shutil
 import locale
 import numpy as np
@@ -65,7 +66,15 @@ def paper_plot(fontsize=9, font='paper'):
             pass
 
     # Clear font cache (in case of switching host machines).
-    shutil.rmtree(matplotlib.get_cachedir(), ignore_errors=True)
+    # On Mac OS, cache directory and config directory is the same, avoid remove
+    # the rc file.
+    for e in os.listdir(matplotlib.get_cachedir()):
+        if str(e) != 'matplotlibrc':
+            fe = os.path.join(matplotlib.get_cachedir(), e)
+            try:
+                os.remove(fe)
+            except OSError:
+                shutil.rmtree(fe, ignore_errors=True)
 
     if font == 'paper':
         matplotlib.rcParams['font.family'] = 'serif'
