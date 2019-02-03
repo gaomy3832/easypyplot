@@ -56,7 +56,13 @@ def paper_plot(fontsize=9, font='paper'):
     uses default, a tuple of (family, font, ...) customizes font.
     """
     # Set locale for unicode signs (e.g., minus sign).
-    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+    try:
+        locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        except locale.Error:
+            pass
 
     # Clear font cache (in case of switching host machines).
     shutil.rmtree(matplotlib.get_cachedir(), ignore_errors=True)
