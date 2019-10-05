@@ -14,6 +14,7 @@ You should have received a copy of the Modified BSD-3 License along with this
 program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 """
 
+from collections import OrderedDict
 import functools
 import os
 import shutil
@@ -22,7 +23,7 @@ import warnings
 
 import numpy as np
 import matplotlib
-import matplotlib.font_manager
+import matplotlib.font_manager as mlpfm
 import matplotlib.pyplot as plt
 import matplotlib.testing
 import matplotlib.testing.compare as mplcmp
@@ -121,6 +122,32 @@ def setup():
         matplotlib.style.use('_classic_test')
     elif ver >= (1, 5):
         matplotlib.style.use('classic')
+    # Times bold bug.
+    # https://stackoverflow.com/questions/33955900
+    # https://github.com/matplotlib/matplotlib/issues/5574
+    #
+    # The proposed solution simply removes `'roman'` from `weight_dict`, which
+    # may cause `KeyError` when `weight_dict['roman']` is used in other places.
+    #
+    # Instead we order `'roman'` after `'bold'`, so when matching weights,
+    # "Times New Roman Bold" will first match `'bold'` and get its weight.
+    #
+    # Also we need to update the shortcut module method `findfont`. It may
+    # already be imported in other modules, so instead of update its value, we
+    # also need to update the font lists of the previous font manager, so that
+    # those already imported can also use the new font lists.
+    if ver >= (2, 0):
+        # Order `'bold'` before `'roman'` in the weight list.
+        roman_weight = mlpfm.weight_dict.pop('roman', None)
+        mlpfm.weight_dict = OrderedDict(mlpfm.weight_dict)
+        if roman_weight is not None:
+            mlpfm.weight_dict['roman'] = roman_weight
+        # Rebuild font manager and update existing font lists.
+        fm = mlpfm.fontManager
+        mlpfm._rebuild()  # pylint: disable=protected-access
+        mlpfm.findfont = mlpfm.fontManager.findfont
+        fm.ttflist = mlpfm.fontManager.ttflist
+        fm.afmlist = mlpfm.fontManager.afmlist
     return original_units_registry, original_settings
 
 
