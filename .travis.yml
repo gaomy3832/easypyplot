@@ -18,6 +18,9 @@ addons:
             - python-tk
             - xvfb
 
+services:
+    - xvfb
+
 cache:
     pip: true
 
@@ -32,11 +35,6 @@ install:
     - pip install coveralls
 
 before_script:
-    - |
-      if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
-        export DISPLAY=:99.0
-        sh -e /etc/init.d/xvfb start
-      fi
     # See https://github.com/tox-dev/tox/issues/318
     - export TOXENV=`tox --listenvs | grep $(echo py${TRAVIS_PYTHON_VERSION}- | tr -d . | sed -e 's/pypypy/pypy/') | tr '\n' ','`
 
