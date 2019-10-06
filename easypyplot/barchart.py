@@ -173,12 +173,7 @@ def draw(axes,
     # Axes options
 
     # Remove xticks
-    # http://stackoverflow.com/questions/12998430/remove-xticks-in-a-matplot-lib-plot
-    axes.tick_params( \
-            axis='x',          # changes apply to the x-axis
-            which='both',      # both major and minor ticks are affected
-            bottom='off',      # ticks along the bottom edge are off
-            top='off')         # ticks along the top edge are off
+    axes.xaxis.set_ticks_position('none')
 
     if group_names is not None:
         axes.set_xticks(xticks)
