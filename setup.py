@@ -51,7 +51,6 @@ setuptools.setup(
     install_requires=[
         'coverage>=4',
         'matplotlib>=1.3',
-        'numpy>=1.8',
         'cycler>=0.10',
         'nose>=1.3',
         'pytest>=3',
