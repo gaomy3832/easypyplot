@@ -93,6 +93,22 @@ def test_paper_plot_mono():
     ax.set_ylabel('My y label')
 
 
+@image_comparison(baseline_images=['format_paper_plot_mathtext'],
+                  remove_text=False)
+def test_paper_plot_mathtext():
+    ''' format paper plot and use mathtext. '''
+    # Must be before figure creation.
+    fmt.paper_plot(font='default')
+
+    fig = plt.figure()
+    ax = fig.gca()
+
+    sin_plot(ax)
+    ax.set_yticks(np.linspace(-100, 100, 11, endpoint=True) / 100.)
+
+    ax.set_yticklabels([r'$e^{' + '{}'.format(x) + r'}$' for x in range(11)])
+
+
 @image_comparison(baseline_images=['format_resize_ax_box_w_r'])
 def test_resize_ax_box_w_r():
     ''' format resize axes box, width to right. '''
@@ -178,11 +194,12 @@ def test_set_axis_to_percent_pcs():
                   extensions=['pdf'], remove_text=False)
 def test_set_axis_to_percent_tex():
     ''' format set axis tick to percentage with Tex. '''
+    skip_if_without_tex()
+    # Must be before figure creation.
+    matplotlib.rcParams['text.usetex'] = True
+
     fig = plt.figure()
     ax = fig.gca()
-
-    skip_if_without_tex()
-    matplotlib.rcParams['text.usetex'] = True
 
     sin_plot(ax)
     ax.set_yticks(np.linspace(-100, 100, 11, endpoint=True) / 100.)
