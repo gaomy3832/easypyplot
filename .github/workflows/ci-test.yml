@@ -3,8 +3,14 @@ name: CI test
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+    - 'README*'
+    - 'LICENSE'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+    - 'README*'
+    - 'LICENSE'
 
 jobs:
   build:
