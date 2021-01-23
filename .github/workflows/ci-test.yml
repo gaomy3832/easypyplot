@@ -33,18 +33,21 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
+    - uses: actions/cache@v2
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install tox coveralls
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Set environment as Python ${{ matrix.python-version }}
-      run: |
-        export TOXENV=`tox --listenvs | grep $(echo py${{ matrix.python-version }}- | tr -d . | sed -e 's/pypypy/pypy/') | tr '\n' ','`
     - name: Test
-      uses: GabrielBB/xvfb-action@v1
-      with:
-        run: tox
+      run: |
+        export TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
+        tox
+    - name: Cleanup xvfb
+      uses: bcomnes/cleanup-xvfb@v1
     - name: Coverage
       run: |
         coveralls
