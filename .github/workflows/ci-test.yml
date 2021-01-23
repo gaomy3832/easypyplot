@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [2.7, 3.4, 3.5, 3.6, 3.7]
 
     steps:
     - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
         python -m pip install tox coveralls
     - name: Test
       run: |
-        export TOXENV=py37-mpl30
+        export TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
         echo $TOXENV
         xvfb-run --auto-servernum tox
     - name: Cleanup xvfb
