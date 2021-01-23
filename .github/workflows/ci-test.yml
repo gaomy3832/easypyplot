@@ -18,8 +18,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install packages
       run: |
-        sudo apt-get install fontconfig inkscape dvipng texlive texlive-latex-extra python-tk xvfb
         sudo apt-get update -qq
+        sudo apt-get install -qq fontconfig inkscape dvipng texlive texlive-latex-extra python-tk xvfb
         echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
         sudo apt-get install -qq msttcorefonts ttf-mscorefonts-installer
         sudo fc-cache -vf
