@@ -1,0 +1,50 @@
+name: CI test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.4, 3.5, 3.6, 3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install packages
+      run: |
+        sudo apt-get install fontconfig inkscape dvipng texlive texlive-latex-extra python-tk xvfb
+        sudo apt-get update -qq
+        echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+        sudo apt-get install -qq msttcorefonts ttf-mscorefonts-installer
+        sudo fc-cache -vf
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install tox coveralls
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Set environment as Python ${{ matrix.python-version }}
+      run: |
+        export TOXENV=`tox --listenvs | grep $(echo py${{ matrix.python-version }}- | tr -d . | sed -e 's/pypypy/pypy/') | tr '\n' ','`
+    - name: Test
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: tox
+    - name: Coverage
+      run: |
+        coveralls
