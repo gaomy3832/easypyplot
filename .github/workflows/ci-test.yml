@@ -7,15 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  start:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [2.7, 3.4, 3.5, 3.6, 3.7]
 
     steps:
-    - uses: actions/checkout@v2
     - uses: actions/cache@v2
       with:
         path: /var/cache/apt
@@ -27,6 +23,18 @@ jobs:
         echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
         sudo apt-get install -qq msttcorefonts ttf-mscorefonts-installer
         sudo fc-cache -vf
+
+  build:
+
+    needs: start
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.4, 3.5, 3.6, 3.7]
+
+    steps:
+    - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -49,7 +57,23 @@ jobs:
         xvfb-run --auto-servernum tox
     - name: Cleanup xvfb
       uses: bcomnes/cleanup-xvfb@v1
-    - name: Coverage
+    - name: Coverage parallel
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: run-${{ matrix.python-version }}
+        parallel: true
+
+  finish:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Coverage finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
+
