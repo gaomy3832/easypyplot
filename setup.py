@@ -41,7 +41,7 @@ setuptools.setup(
     description=DESC,
 
     author='Mingyu Gao',
-    author_email='mgao12@stanford.edu',
+    author_email='gaomy@tsinghua.edu.cn',
     long_description=_readme(),
     url='https://github.com/gaomy3832/easypyplot',
     license='BSD 3-clause',

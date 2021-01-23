@@ -118,7 +118,10 @@ def setup():
     if ver >= (1, 5):
         matplotlib.testing.setup()
     # Style name has changed over matplotlib versions.
-    if ver >= (2, 0):
+    # See changes from <matplotlib repo>/lib/matplotlib/testing/conftest.py:mpl_test_settings()
+    if ver >= (3, 2):
+        matplotlib.style.use(['classic', '_classic_test_patch'])
+    elif ver >= (2, 0):
         matplotlib.style.use('_classic_test')
     elif ver >= (1, 5):
         matplotlib.style.use('classic')
