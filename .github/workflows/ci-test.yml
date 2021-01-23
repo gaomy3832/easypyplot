@@ -39,7 +39,7 @@ jobs:
         python -m pip install tox coveralls
     - name: Test
       run: |
-        export TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
+        export TOXENV=py37-mpl30
         echo $TOXENV
         xvfb-run --auto-servernum tox
     - name: Cleanup xvfb
@@ -49,6 +49,7 @@ jobs:
         coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS_SERVICE_NAME: github
         COVERALLS_FLAG_NAME: run-${{ matrix.python-version }}
         COVERALLS_PARALLEL: true
 
