@@ -222,6 +222,50 @@ def test_set_axis_to_percent_pplot():
     fmt.set_axis_to_percent(ax.yaxis)
 
 
+@image_comparison(baseline_images=['format_set_group_xticklabels'],
+                  remove_text=False)
+def test_set_group_xticklabels():
+    ''' format set group labels along x axis. '''
+    fig = plt.figure()
+    ax = fig.add_subplot(211)
+
+    gnum = 4
+    xnum = 12
+    xs = list(range(xnum))
+    y = 0.2
+
+    ax.set_ylim([0, 1])
+    ax.axhline(y, xmin=xs[0], xmax=xs[-1])
+
+    ax.set_xticks(xs)
+
+    grouplabels = ['g{}'.format(i) for i in range(gnum)]
+    xvals = range((xnum // gnum - 1) // 2, xnum, xnum // gnum)
+    fmt.set_group_xticklabels(ax, grouplabels, xvals, -y)
+
+
+@image_comparison(baseline_images=['format_set_group_xticklabels'],
+                  remove_text=False, save_suffix='_orig_xvals')
+def test_set_group_xticklabels_orig_xvals():
+    ''' format set group labels along x axis, with original xvals. '''
+    # pylint: disable=invalid-name
+    fig = plt.figure()
+    ax = fig.add_subplot(211)
+
+    gnum = 4
+    xnum = 12
+    xs = list(range(xnum))
+    y = 0.2
+
+    ax.set_ylim([0, 1])
+    ax.axhline(y, xmin=xs[0], xmax=xs[-1])
+
+    ax.set_xticks(xs)
+
+    grouplabels = ['g{}'.format(i) for i in range(gnum)]
+    fmt.set_group_xticklabels(ax, grouplabels, xs, -y)
+
+
 class TestFormat(unittest.TestCase):
     ''' Tests for format module. '''
 
@@ -241,4 +285,13 @@ class TestFormat(unittest.TestCase):
         ''' paper_plot invalid font. '''
         with self.assertRaisesRegexp(ValueError, r'\[format\] .*font.*'):
             fmt.paper_plot(font='DejaVu Serif')
+
+    def test_set_group_xticklabels_invalid_xvals(self):
+        ''' set_group_xticklabels invalid xvals. '''
+        # pylint: disable=invalid-name
+        fig = plt.figure()
+        ax = fig.gca()
+
+        with self.assertRaisesRegexp(ValueError, r'\[format\] .*xvals.*'):
+            fmt.set_group_xticklabels(ax, ['a', 'b'], [0, 1, 2], -1)
 

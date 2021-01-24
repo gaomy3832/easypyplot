@@ -218,3 +218,39 @@ def set_axis_to_percent(axis, precision=0):
 
     axis.set_major_formatter(matplotlib.ticker.FuncFormatter(cb_to_percent))
 
+
+def set_group_xticklabels(axes, grouplabels, xvals, yval,
+                          horizontalalignment='center', verticalalignment='center',
+                          **kwargs):
+    """ Set group labels along x axis.
+
+    axes: axes to be added with group labels.
+    grouplabels: group labels to be added.
+    xvals: list of x positions to add group labels. It could have the same length
+        as grouplabels (in which case it is directly used as the positions), or
+        a multiple (in which case the positions are inferred from it).
+    yval: y position to add group labels.
+    horizontalalignment: horizontal alignment, e.g., 'center', 'left'.
+    verticalalignment: vertical alignment, e.g., 'center', 'top', 'bottom', 'baseline'.
+    kwargs: additional kw arguments passed to axes.text().
+    """
+    gnum = len(grouplabels)
+    xnum = len(xvals)
+    if xnum == 0 or xnum % gnum != 0:
+        raise ValueError('[format] set_group_xticklabels: '
+                         'xvals length must be a multiple of grouplabels length. '
+                         '({} vs. {})'
+                         .format(xnum, gnum))
+
+    # Infer positions for group labels.
+    gsize = xnum // gnum
+    gvals = []
+    for g in range(gnum):
+        gxs = xvals[g * gsize : (g + 1) * gsize]
+        # Use the center of the first and last positions.
+        gval = (gxs[0] + gxs[-1]) / 2.
+        gvals.append(gval)
+
+    for gval, label in zip(gvals, grouplabels):
+        axes.text(gval, yval, label, ha=horizontalalignment, va=verticalalignment, **kwargs)
+
