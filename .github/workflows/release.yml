@@ -30,6 +30,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         mkdir tmp && cd tmp
+        sleep 3
         pip install easypyplot
         python -c "import easypyplot; import sys; sys.stdout.write(easypyplot.__version__ + '\n')"
 
