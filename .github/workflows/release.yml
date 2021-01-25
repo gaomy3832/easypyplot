@@ -3,8 +3,6 @@ name: release
 on:
   release:
     types: [created]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   deploy:
@@ -24,8 +22,19 @@ jobs:
     - name: Build
       run: |
         python setup.py sdist bdist_wheel --universal
+    - name: Publish to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
     - name: Install from Test PyPI and check
       run: |
         pip install --index-url https://test.pypi.org/simple --extra-index-url https://pypi.org/simple easypyplot
         python -c "import easypyplot; import sys; sys.stdout.write(easypyplot.__version__ + '\n')"
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
 
