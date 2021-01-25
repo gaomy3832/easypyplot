@@ -26,8 +26,6 @@ jobs:
         python setup.py sdist bdist_wheel --universal
     - name: Install from Test PyPI and check
       run: |
-        python -m pip install --upgrade pip
-        mkdir tmp && cd tmp
         pip install --index-url https://test.pypi.org/simple --extra-index-url https://pypi.org/simple easypyplot
         python -c "import easypyplot; import sys; sys.stdout.write(easypyplot.__version__ + '\n')"
 
