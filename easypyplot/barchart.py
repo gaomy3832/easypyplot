@@ -25,7 +25,7 @@ def draw(axes,
          colors=None, edgecolor='k', linewidth=0.5,
          hatchs=None, hatchcolor='k',
          legendloc='upper right', legendncol=1, log=False,
-         xticklabelfontsize=None, xticklabelrotation='horizontal'):
+         xticklabelfontsize=None, xticklabelrotation='horizontal', xticklabelfontproperties=None):
     """ A super flexible bar chart drawing wrapper.
 
     axes: the axes instance to be drawn on.
@@ -61,6 +61,7 @@ def draw(axes,
 
     xticklabelfontsize: the fontsize of the xtick labels.
     xticklabelrotation: the rotation control of the xtick labels.
+    xticklabelfontproperties: the FontManager instance applied to the xtick labels, including font name, size, etc. The xticklabelfontsize has a higher priority over xticklabelfontproperties.
 
     return: handlers associated with entries.
     """
@@ -177,7 +178,7 @@ def draw(axes,
     if group_names is not None:
         axes.set_xticks(xticks)
         axes.set_xticklabels(group_names, \
-                fontsize=xticklabelfontsize, rotation=xticklabelrotation)
+                fontsize=xticklabelfontsize, rotation=xticklabelrotation, fontproperties=xticklabelfontproperties)
 
     if entry_names is not None:
         axes.legend(hdls, entry_names, loc=legendloc, ncol=legendncol)
