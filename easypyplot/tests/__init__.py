@@ -139,7 +139,9 @@ def setup():
     # already be imported in other modules, so instead of update its value, we
     # also need to update the font lists of the previous font manager, so that
     # those already imported can also use the new font lists.
-    if ver >= (2, 0):
+    #
+    # This bug was fixed since v3.2, through https://github.com/matplotlib/matplotlib/pull/14483.
+    if (3, 2) > ver >= (2, 0):
         # Order `'bold'` before `'roman'` in the weight list.
         roman_weight = mlpfm.weight_dict.pop('roman', None)
         mlpfm.weight_dict = OrderedDict(mlpfm.weight_dict)
@@ -147,6 +149,7 @@ def setup():
             mlpfm.weight_dict['roman'] = roman_weight
         # Rebuild font manager and update existing font lists.
         fm = mlpfm.fontManager
+        # _rebuild() was removed since v3.4, in commit a0065c30ae7abbaa4eef8394c97f74d93da3f2b0.
         mlpfm._rebuild()  # pylint: disable=protected-access
         mlpfm.findfont = mlpfm.fontManager.findfont
         fm.ttflist = mlpfm.fontManager.ttflist
