@@ -282,7 +282,7 @@ class TestFormat(unittest.TestCase):
 
     def test_paper_plot_invalid_font(self):
         ''' paper_plot invalid font. '''
-        with self.assertRaisesRegexp(ValueError, r'\[format\] .*font.*'):
+        with self.assertRaisesRegex(ValueError, r'\[format\] .*font.*'):
             fmt.paper_plot(font='DejaVu Serif')
 
     def test_set_group_xticklabels_invalid_xvals(self):
@@ -291,6 +291,6 @@ class TestFormat(unittest.TestCase):
         fig = plt.figure()
         ax = fig.gca()
 
-        with self.assertRaisesRegexp(ValueError, r'\[format\] .*xvals.*'):
+        with self.assertRaisesRegex(ValueError, r'\[format\] .*xvals.*'):
             fmt.set_group_xticklabels(ax, ['a', 'b'], [0, 1, 2], -1)
 

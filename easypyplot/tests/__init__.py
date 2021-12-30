@@ -17,6 +17,7 @@ from collections import OrderedDict
 import functools
 import os
 import shutil
+import sys
 import unittest
 import warnings
 
@@ -368,4 +369,9 @@ def image_comparison(baseline_images, extensions=None, tol=0,
         return ImageComparisonTest
 
     return decorator
+
+
+# Fix unittest.TestCase.assertRaisesRegex before Python 3.2
+if sys.version_info < (3, 2):
+    unittest.TestCase.assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
 

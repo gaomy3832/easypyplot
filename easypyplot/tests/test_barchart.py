@@ -272,52 +272,52 @@ class TestBarchart(unittest.TestCase):
 
     def test_invalid_data(self):
         ''' Invalid data. '''
-        with self.assertRaisesRegexp(ValueError, r'\[barchart\] .*array.*'):
+        with self.assertRaisesRegex(ValueError, r'\[barchart\] .*array.*'):
             barchart.draw(self.axes, [[1, 2], [1, 2, 3]])
 
     def test_invalid_data_dim(self):
         ''' Invalid data dimension. '''
         for d in [0, 1, 3, 4]:
-            with self.assertRaisesRegexp(ValueError, r'\[barchart\] .*dim.*'):
+            with self.assertRaisesRegex(ValueError, r'\[barchart\] .*dim.*'):
                 barchart.draw(self.axes, np.zeros([3] * d))
 
     def test_invalid_group_names(self):
         ''' Invalid group names. '''
-        with self.assertRaisesRegexp(ValueError,
-                                     r'\[barchart\] .*group names.*'):
+        with self.assertRaisesRegex(ValueError,
+                                    r'\[barchart\] .*group names.*'):
             barchart.draw(self.axes, _data(), group_names=['a', 'b', 'c', 'd'])
 
     def test_invalid_entry_names(self):
         ''' Invalid entry names. '''
-        with self.assertRaisesRegexp(ValueError,
-                                     r'\[barchart\] .*entry names.*'):
+        with self.assertRaisesRegex(ValueError,
+                                    r'\[barchart\] .*entry names.*'):
             barchart.draw(self.axes, _data(), entry_names=['x', 'y', 'z'])
 
     def test_invalid_cluster_bar_shrink(self):
         ''' Invalid cluster_bar_shrink. '''
-        with self.assertRaisesRegexp(ValueError,
-                                     r'\[barchart\] .*cluster_bar_shrink.*'):
+        with self.assertRaisesRegex(ValueError,
+                                    r'\[barchart\] .*cluster_bar_shrink.*'):
             barchart.draw(self.axes, _data(), breakdown=False,
                           cluster_bar_shrink=1.2)
 
     def test_invalid_xticks(self):
         ''' Invalid xticks. '''
-        with self.assertRaisesRegexp(ValueError, r'\[barchart\] .*xticks.*'):
+        with self.assertRaisesRegex(ValueError, r'\[barchart\] .*xticks.*'):
             barchart.draw(self.axes, _data(), xticks=['x'])
 
     def test_not_enough_def_colors(self):
         ''' Not enough default colors. '''
-        with self.assertRaisesRegexp(ValueError,
-                                     r'\[barchart\] .*default colors.*'):
+        with self.assertRaisesRegex(ValueError,
+                                    r'\[barchart\] .*default colors.*'):
             barchart.draw(self.axes, [[1] * 100])
 
     def test_invalid_colors(self):
         ''' Invalid colors. '''
-        with self.assertRaisesRegexp(ValueError, r'\[barchart\] .*colors.*'):
+        with self.assertRaisesRegex(ValueError, r'\[barchart\] .*colors.*'):
             barchart.draw(self.axes, _data(), colors=['k'])
 
     def test_invalid_hatchs(self):
         ''' Invalid hatchs. '''
-        with self.assertRaisesRegexp(ValueError, r'\[barchart\] .*hatchs.*'):
+        with self.assertRaisesRegex(ValueError, r'\[barchart\] .*hatchs.*'):
             barchart.draw(self.axes, _data(), hatchs=['/', '//', 'xx'])
 
