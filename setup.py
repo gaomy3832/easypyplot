@@ -71,6 +71,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Artistic Software',
         'Topic :: Multimedia :: Graphics :: Presentation',
         'Topic :: Scientific/Engineering :: Visualization',
