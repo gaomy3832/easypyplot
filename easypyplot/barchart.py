@@ -179,10 +179,30 @@ def draw(axes,
     axes.xaxis.set_ticks_position('none')
 
     if group_names is not None:
+        if xticklabelfontproperties is None:
+            xticklabelfontproperties = matplotlib.font_manager.FontProperties()
+        elif isinstance(xticklabelfontproperties, str):
+            xticklabelfontproperties = matplotlib.font_manager.FontProperties(
+                xticklabelfontproperties)
+        elif isinstance(xticklabelfontproperties, matplotlib.font_manager.FontProperties):
+            pass
+        else:
+            try:
+                xticklabelfontproperties = matplotlib.font_manager.FontProperties(
+                    **xticklabelfontproperties)
+            except TypeError:
+                raise TypeError('[barchart] currently only support '
+                                'xticklabelfontproperties types of str, dict, '
+                                'and FontProperties.')
+
+        # xticklabelfontsize overwrites xticklabelfontproperties.
+        if xticklabelfontsize is not None:
+            xticklabelfontproperties.set_size(xticklabelfontsize)
+
         axes.set_xticks(xticks)
         axes.set_xticklabels(
             group_names,
-            fontsize=xticklabelfontsize, rotation=xticklabelrotation,
+            rotation=xticklabelrotation,
             fontproperties=xticklabelfontproperties)
 
     if entry_names is not None:

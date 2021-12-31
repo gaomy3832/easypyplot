@@ -16,6 +16,7 @@ program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 import unittest
 
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 
 from easypyplot import barchart
@@ -244,6 +245,69 @@ def test_barchart_xtlfontsize():
                   group_names=['a', 'b', 'c'])
 
 
+@image_comparison(baseline_images=['barchart_xticklabelfontsize_fontprop'],
+                  remove_text=False)
+def test_barchart_xtlfontsize_xtlfontprop():
+    ''' bar chart xticklabel fontsize overwriting fontproperties. '''
+    fig = plt.figure()
+    ax = fig.gca()
+
+    barchart.draw(ax, _data(), xticklabelfontsize=20,
+                  xticklabelfontproperties={'size':10},
+                  group_names=['a', 'b', 'c'])
+
+
+@image_comparison(baseline_images=['barchart_xticklabelfontprop'],
+                  remove_text=False)
+def test_barchart_xtlfontprop():
+    ''' bar chart xticklabel fontproperties. '''
+    fig = plt.figure()
+    ax = fig.gca()
+
+    barchart.draw(ax, _data(),
+                  xticklabelfontproperties={'size':20},
+                  group_names=['a', 'b', 'c'])
+
+
+@image_comparison(baseline_images=['barchart_xticklabelfontprop_italic'],
+                  remove_text=False)
+def test_barchart_xtlfontprop_italic():
+    ''' bar chart xticklabel fontproperties, italic. '''
+    fig = plt.figure()
+    ax = fig.gca()
+
+    barchart.draw(ax, _data(),
+                  xticklabelfontproperties={'size':20, 'style':'italic'},
+                  group_names=['a', 'b', 'c'])
+
+
+@image_comparison(baseline_images=['barchart_xticklabelfontprop_fp_italic'],
+                  remove_text=False)
+def test_barchart_xtlfontprop_fp_italic():
+    ''' bar chart xticklabel fontproperties fp type, italic. '''
+    fig = plt.figure()
+    ax = fig.gca()
+
+    fp = matplotlib.font_manager.FontProperties(family='sans-serif',
+                                                size=20,
+                                                style='italic')
+    barchart.draw(ax, _data(),
+                  xticklabelfontproperties=fp,
+                  group_names=['a', 'b', 'c'])
+
+
+@image_comparison(baseline_images=['barchart_xticklabelfontprop_str_italic'],
+                  remove_text=False)
+def test_barchart_xtlfontprop_str_italic():
+    ''' bar chart xticklabel fontproperties str type, italic. '''
+    fig = plt.figure()
+    ax = fig.gca()
+
+    barchart.draw(ax, _data(),
+                  xticklabelfontproperties=r'sans\-serif:size=20:style=italic',
+                  group_names=['a', 'b', 'c'])
+
+
 @image_comparison(baseline_images=['barchart_xticklabelrotation'],
                   remove_text=False)
 def test_barchart_xtlrotation():
@@ -320,4 +384,10 @@ class TestBarchart(unittest.TestCase):
         ''' Invalid hatchs. '''
         with self.assertRaisesRegexp(ValueError, r'\[barchart\] .*hatchs.*'):
             barchart.draw(self.axes, _data(), hatchs=['/', '//', 'xx'])
+
+    def test_invalid_xtlfontproperties(self):
+        ''' Invalid xticklabelfontproperties. '''
+        with self.assertRaisesRegex(TypeError, r'\[barchart\] .*fontproperties.*'):
+            barchart.draw(self.axes, _data(), group_names=['a', 'b', 'c'],
+                          xticklabelfontproperties=10)
 
