@@ -2,7 +2,7 @@ name: test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, testing ]
     paths-ignore:
     - 'README*'
     - 'LICENSE'
@@ -15,10 +15,16 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['2.7', '3.4', '3.5', '3.6', '3.7', '3.8']
+        os: [ubuntu-latest]
+        python-version: ['2.7', '3.6', '3.7', '3.8', '3.9']
+        include:
+          - os: ubuntu-18.04
+            python-version: '3.4'
+          - os: ubuntu-18.04
+            python-version: '3.5'
 
     steps:
     - uses: actions/checkout@v2
@@ -55,6 +61,7 @@ jobs:
       # see https://stackoverflow.com/a/27085321
       run: |
         sudo apt-get install -qq libfreetype6-dev
+      if: ${{ matrix.os == 'ubuntu-18.04' }}
     - name: Select tests
       run: |
         TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
