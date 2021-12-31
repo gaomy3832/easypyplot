@@ -75,14 +75,16 @@ def skip_if_without_fonts(fonts):
 def skip_if_without_tex():
     ''' Skip the test if the system does not have TeX. '''
     __tracebackhide__ = True  # pylint: disable=unused-variable
+    if matplotlib.checkdep_usetex(True):
+        # Dependencies are satisfied; do not skip.
+        return
     with warnings.catch_warnings():
         warnings.filterwarnings('error')
         try:
-            if matplotlib.checkdep_usetex(True):
-                return
+            _ = matplotlib.checkdep_usetex(True)
         except UserWarning as e:
             if 'Agg' in str(e):
-                # Filter the warning about using Tex with Agg backend.
+                # Filter the warning about using Tex with Agg backend; do not skip.
                 return
     raise unittest.SkipTest('Skip because Tex is not in this system.')
 
