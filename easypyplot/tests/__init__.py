@@ -16,7 +16,9 @@ program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 from collections import OrderedDict
 import functools
 import os
+import re
 import shutil
+import subprocess
 import sys
 import unittest
 import warnings
@@ -196,6 +198,46 @@ class _ImageComparisonBase(unittest.TestCase):
         if extension not in mplcmp.comparable_formats():
             raise unittest.SkipTest('Cannot compare {} files in this '
                                     'system'.format(extension))
+
+        if extension == 'svg' and easypyplot.util.matplotlib_version_tuple() < (2, 1):
+            raise unittest.SkipTest('Cannot compare svg files due to incompatible '
+                                    'Inkscape command line interface change of '
+                                    '--export-png.')
+
+        # Invoking inkscape has compatibility issue due to inkscape cmd arg changes
+        # since its version 1.0.
+        # See https://github.com/matplotlib/matplotlib/issues/15999
+        if extension == 'svg' and easypyplot.util.matplotlib_version_tuple() < (3, 2):
+            try:
+                with open(os.devnull, 'w') as fnull:  # pylint: disable=unspecified-encoding
+                    inkscape_ver_str = subprocess.check_output(
+                        ['inkscape', '-V'], stderr=fnull, universal_newlines=True)
+                match = re.search(r'^Inkscape ([^ ]*)', inkscape_ver_str)
+                if match:
+                    inkscape_ver = tuple(int(i) for i in match.group(1).split('.'))
+                else:
+                    inkscape_ver = (999,)  # a dummy new version that is never supported
+            except (OSError, subprocess.SubprocessError):
+                inkscape_ver = (999,)  # a dummy new version that is never supported
+            if inkscape_ver >= (1,):
+                raise unittest.SkipTest('Cannot compare svg files due to incompatible '
+                                        'Inkscape version {}'.format(inkscape_ver_str))
+
+        # Invoking gs misses -dNOSAFER before matplotlib 3.1.3, which is incompatible
+        # with ghostscript 9.50.
+        # See https://github.com/matplotlib/matplotlib/pull/15556
+        if extension == 'pdf' and easypyplot.util.matplotlib_version_tuple() < (3, 1):
+            try:
+                with open(os.devnull, 'w') as fnull:  # pylint: disable=unspecified-encoding
+                    gs_ver_str = subprocess.check_output(
+                        ['gs', '--version'], stderr=fnull, universal_newlines=True)
+                gs_ver = tuple(int(i) for i in gs_ver_str.split('.'))
+            except (OSError, subprocess.SubprocessError):
+                gs_ver = (999,)  # a dummy new version that is never supported
+            if gs_ver >= (9, 50):
+                raise unittest.SkipTest('Cannot compare pdf files due to incompatible '
+                                        'gs {} command line interface change of '
+                                        '-dNOSAFER.'.format(gs_ver_str))
 
     def compare(self, baseline_images, actual_suffix, extension, tol):
         ''' Compare actual images with baseline images. '''
