@@ -11,6 +11,12 @@ on:
     paths-ignore:
     - 'README*'
     - 'LICENSE'
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Enable tmate debugging (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
 
 jobs:
   build:
@@ -70,6 +76,13 @@ jobs:
     - name: Test
       run: |
         xvfb-run --auto-servernum tox
+    - name: Setup tmate session if enabled debugging
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+      with:
+        limit-access-to-actor: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      timeout-minutes: 60
     - uses: bcomnes/cleanup-xvfb@v1
     - name: Upload coverage data
       uses: codecov/codecov-action@v1
