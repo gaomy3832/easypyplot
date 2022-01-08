@@ -56,6 +56,10 @@ def test_figsize():
         pdf.plot_teardown(pdfpage)
 
 
+@pytest.mark.xfail(util.__mpl_version__[:2] == (2, 2)
+                   and sys.version_info[:2] == (3, 4),
+                   reason='Python 3.4 with 2.2 has legend box position issue.'
+                  )
 @image_comparison(baseline_images=['pdf_fontsize'], extensions=['pdf'],
                   saved_as=['pdf_fontsize'])
 def test_fontsize():

@@ -14,12 +14,15 @@ program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 """
 
 import unittest
+import sys
 
 import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
+import pytest
 
 from easypyplot import barchart
+from easypyplot import util
 
 from . import image_comparison
 from . import setup, teardown
@@ -48,6 +51,10 @@ def test_barchart_nparray():
     barchart.draw(ax, np.array(_data()))
 
 
+@pytest.mark.xfail(util.__mpl_version__[:2] == (2, 2)
+                   and sys.version_info[:2] == (3, 4),
+                   reason='Python 3.4 with 2.2 has legend box position issue.'
+                  )
 @image_comparison(baseline_images=['barchart_hdls'],
                   remove_text=False)
 def test_barchart_hdls():
@@ -70,6 +77,10 @@ def test_barchart_group_names():
     barchart.draw(ax, _data(), group_names=['Aa', 'Bb', '$Cc$'])
 
 
+@pytest.mark.xfail(util.__mpl_version__[:2] == (2, 2)
+                   and sys.version_info[:2] == (3, 4),
+                   reason='Python 3.4 with 2.2 has legend box position issue.'
+                  )
 @image_comparison(baseline_images=['barchart_entry_names'],
                   remove_text=False)
 def test_barchart_entry_names():
@@ -213,6 +224,10 @@ def test_barchart_hatchcolor():
     barchart.draw(ax, _data(), hatchcolor='r', hatchs=['/', '//'])
 
 
+@pytest.mark.xfail(util.__mpl_version__[:2] == (2, 2)
+                   and sys.version_info[:2] == (3, 4),
+                   reason='Python 3.4 with 2.2 has legend box position issue.'
+                  )
 @image_comparison(baseline_images=['barchart_legend_opts'],
                   remove_text=False)
 def test_barchart_legend_opts():

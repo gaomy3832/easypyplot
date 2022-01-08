@@ -2,7 +2,7 @@ name: test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, testing ]
     paths-ignore:
     - 'README*'
     - 'LICENSE'
@@ -11,24 +11,53 @@ on:
     paths-ignore:
     - 'README*'
     - 'LICENSE'
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Enable tmate debugging (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [2.7, 3.4, 3.5, 3.6, 3.7, 3.8]
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['2.7', '3.6', '3.7', '3.8', '3.9']
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install packages
+    - name: Install packages (Linux)
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -qq fontconfig inkscape dvipng texlive texlive-latex-extra python-tk xvfb
+        # install fonts.
+        sudo apt-get install -qq fontconfig
         echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
         sudo apt-get install -qq msttcorefonts ttf-mscorefonts-installer
         sudo fc-cache -vf
+        # install format converters.
+        sudo apt-get install -qq inkscape ghostscript dvipng
+        # install tex.
+        sudo apt-get install -qq texlive texlive-latex-extra
+        # install x server.
+        sudo apt-get install -qq python-tk xvfb
+      if: ${{ runner.os == 'Linux' }}
+    - name: Install packages (MacOS)
+      run: |
+        brew upgrade
+        # install fonts.
+        brew tap homebrew/cask-fonts
+        brew install font-times-new-roman
+        # install format converters.
+        brew install --cask inkscape
+        brew install ghostscript
+        # install tex.
+        brew install --cask basictex
+        # install x server.
+        brew install gtk+3 python-tk
+      if: ${{ runner.os == 'MacOS' }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -43,12 +72,39 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install tox coverage
-    - name: Test
+    - name: Fix issue with matplotlib 1.4
+      # avoid an issue in distutil when installing matplotlib 1.4.
+      # see https://stackoverflow.com/a/27085321
       run: |
-        export TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
+        sudo apt-get install -qq libfreetype6-dev
+      if: ${{ matrix.os == 'ubuntu-18.04' }}
+    - name: Fix MacOS backend issue with matplotlib < 3.2
+      # see https://stackoverflow.com/q/4130355 and https://matplotlib.org/3.1.0/faq/osx_framework.html
+      run: |
+        echo 'backend: Agg' >> matplotlibrc
+      if: ${{ runner.os == 'MacOS' }}
+    - name: Select tests
+      run: |
+        TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
         echo $TOXENV
+        echo "TOXENV=$TOXENV" >> $GITHUB_ENV
+    - name: Test (Linux)
+      run: |
         xvfb-run --auto-servernum tox
+      if: ${{ runner.os == 'Linux' }}
+    - name: Test (MacOS)
+      run: |
+        tox
+      if: ${{ runner.os == 'MacOS' }}
+    - name: Setup tmate session if enabled debugging
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+      with:
+        limit-access-to-actor: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      timeout-minutes: 60
     - uses: bcomnes/cleanup-xvfb@v1
+      if: ${{ runner.os == 'Linux' }}
     - name: Upload coverage data
       uses: codecov/codecov-action@v1
       with:
