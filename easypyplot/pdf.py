@@ -15,10 +15,11 @@ program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 
 from contextlib import contextmanager
 import matplotlib.backends.backend_pdf
+import matplotlib.pyplot
 
 from .format import paper_plot
 
-def plot_setup(name, figsize=None, fontsize=9, font='paper'):
+def plot_setup(name, figsize=None, fontsize=9, font='paper', dpi=None):
     """ Setup a PDF page for plot.
 
     name: PDF file name. If not ending with .pdf, will automatically append.
@@ -31,7 +32,7 @@ def plot_setup(name, figsize=None, fontsize=9, font='paper'):
     if not name.endswith('.pdf'):
         name += '.pdf'
     pdfpage = matplotlib.backends.backend_pdf.PdfPages(name)
-    fig = matplotlib.pyplot.figure(figsize=figsize)
+    fig = matplotlib.pyplot.figure(figsize=figsize, dpi=dpi)
     return pdfpage, fig
 
 
