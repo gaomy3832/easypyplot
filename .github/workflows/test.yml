@@ -88,6 +88,13 @@ jobs:
         TOXENV=$(tox --listenvs | grep $(echo "py${{ matrix.python-version }}-" | tr -d . | sed -e "s/pypypy/pypy/") | tr "\n" ",")
         echo $TOXENV
         echo "TOXENV=$TOXENV" >> $GITHUB_ENV
+    - name: Setup tmate session if enabled debugging
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+      with:
+        limit-access-to-actor: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      timeout-minutes: 60
     - name: Test (Linux)
       run: |
         xvfb-run --auto-servernum tox
@@ -96,13 +103,6 @@ jobs:
       run: |
         tox
       if: ${{ runner.os == 'MacOS' }}
-    - name: Setup tmate session if enabled debugging
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
-      with:
-        limit-access-to-actor: true
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      timeout-minutes: 60
     - uses: bcomnes/cleanup-xvfb@v1
       if: ${{ runner.os == 'Linux' }}
     - name: Upload coverage data
