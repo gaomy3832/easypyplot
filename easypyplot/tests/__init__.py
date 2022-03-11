@@ -112,7 +112,7 @@ def sin_plot(axes, phi=0, fmt='', remove_text=True):
         skip_if_without_fonts(fonts)
 
 
-def setup():
+def mpl_testing_setup():
     ''' Set up. '''
     plt.close('all')
     original_units_registry = matplotlib.units.registry.copy()
@@ -161,7 +161,7 @@ def setup():
     return original_units_registry, original_settings
 
 
-def teardown(origs):
+def mpl_testing_teardown(origs):
     ''' Tear down. '''
     plt.close('all')
     original_units_registry, original_settings = origs
@@ -185,12 +185,12 @@ class _ImageComparisonBase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.origs = setup()
+        cls.origs = mpl_testing_setup()
         cls.baseline_dir, cls.result_dir = cls._image_directories()
 
     @classmethod
     def tearDownClass(cls):
-        teardown(cls.origs)
+        mpl_testing_teardown(cls.origs)
 
     @staticmethod
     def mark_extension(extension):
