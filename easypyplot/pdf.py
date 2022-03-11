@@ -15,10 +15,11 @@ program. If not, see <https://opensource.org/licenses/BSD-3-Clause>.
 
 from contextlib import contextmanager
 import matplotlib.backends.backend_pdf
+import matplotlib.pyplot
 
 from .format import paper_plot
 
-def plot_setup(name, figsize=None, fontsize=9, font='paper'):
+def plot_setup(name, figsize=None, fontsize=9, font='paper', dpi=None):
     """ Setup a PDF page for plot.
 
     name: PDF file name. If not ending with .pdf, will automatically append.
@@ -26,12 +27,13 @@ def plot_setup(name, figsize=None, fontsize=9, font='paper'):
     fontsize: fontsize for legends and labels.
     font: font for legends and labels, 'paper' uses Times New Roman, 'default'
     uses default, a tuple of (family, font, ...) customizes font.
+    dpi: resolution of the figure.
     """
     paper_plot(fontsize=fontsize, font=font)
     if not name.endswith('.pdf'):
         name += '.pdf'
     pdfpage = matplotlib.backends.backend_pdf.PdfPages(name)
-    fig = matplotlib.pyplot.figure(figsize=figsize)
+    fig = matplotlib.pyplot.figure(figsize=figsize, dpi=dpi)
     return pdfpage, fig
 
 
@@ -46,7 +48,7 @@ def plot_teardown(pdfpage, fig=None):
 
 
 @contextmanager
-def plot_open(name, figsize=None, fontsize=9, font='paper'):
+def plot_open(name, figsize=None, fontsize=9, font='paper', dpi=None):
     """ Open a context of PDF page for plot, used for the `with` statement.
 
     name: PDF file name. If not ending with .pdf, will automatically append.
@@ -54,9 +56,10 @@ def plot_open(name, figsize=None, fontsize=9, font='paper'):
     fontsize: fontsize for legends and labels.
     font: font for legends and labels, 'paper' uses Times New Roman, 'default'
     uses default, a tuple of (family, font, ...) customizes font.
+    dpi: resolution of the figure.
     """
     pdfpage, fig = plot_setup(name, figsize=figsize, fontsize=fontsize,
-                              font=font)
+                              font=font, dpi=dpi)
     yield fig
     plot_teardown(pdfpage, fig)
 
