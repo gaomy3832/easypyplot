@@ -158,12 +158,14 @@ def setup():
         mlpfm.findfont = mlpfm.fontManager.findfont
         fm.ttflist = mlpfm.fontManager.ttflist
         fm.afmlist = mlpfm.fontManager.afmlist
-    return original_units_registry, original_settings
+    return (original_units_registry, original_settings)
 
 
 def teardown(origs):
     ''' Tear down. '''
     plt.close('all')
+    print('in teardown', origs)
+    print('in teardown', len(origs))
     original_units_registry, original_settings = origs
     matplotlib.rcParams.clear()
     matplotlib.rcParams.update(original_settings)
@@ -186,10 +188,12 @@ class _ImageComparisonBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.origs = setup()
+        print('in setup cls', cls.origs)
         cls.baseline_dir, cls.result_dir = cls._image_directories()
 
     @classmethod
     def tearDownClass(cls):
+        print('in teardown cls', cls.origs)
         teardown(cls.origs)
 
     @staticmethod

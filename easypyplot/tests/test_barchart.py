@@ -25,7 +25,8 @@ from easypyplot import barchart
 from easypyplot import util
 
 from . import image_comparison
-from . import setup, teardown
+from . import setup
+from . import teardown as testing_teardown
 
 def _data():
     return [[1, 3], [2, 4], [3.5, 1.5]]
@@ -338,11 +339,13 @@ class TestBarchart(unittest.TestCase):
     ''' Tests for barchart module. '''
 
     def setUp(self):
-        self.origs = setup()
+        self.orig_configs = setup()
+        print('in test up', self.orig_configs)
         self.axes = plt.figure().gca()
 
     def tearDown(self):
-        teardown(self.origs)
+        print('in test down', self.orig_configs)
+        testing_teardown(self.orig_configs)
 
     def test_return_num_handlers(self):
         ''' Returned number of handlers. '''
